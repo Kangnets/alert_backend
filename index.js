@@ -1,21 +1,30 @@
 const { google } = require("googleapis");
 const axios = require("axios");
-const fs = require("fs");
 
-// 환경 설정
 const SPREADSHEET_ID = "1tITi6GX71wZ7ZjLtQQ8C1FXsKQxc7Y1DbRlINJmHRcM";
-const RANGE = "설문지 응답 시트1"; // 정확한 시트 이름으로 바꿔야 할 수 있음
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/당신의_URL";
+const RANGE = "설문지 응답 시트1!A1:Z";
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/여기에_웹훅_URL";
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: "./key/test-456802-6ac27b7c623e.json",
+// 서비스 계정 정보 직접 입력 (절대 외부 노출 금지!)
+const serviceAccount = {
+  client_email: "your-service-account@your-project.iam.gserviceaccount.com",
+  private_key: `-----BEGIN PRIVATE KEY-----
+YOUR_PRIVATE_KEY_LINE_1
+YOUR_PRIVATE_KEY_LINE_2
+...
+-----END PRIVATE KEY-----\n`, // 개행 포함
+};
+
+const auth = new google.auth.JWT({
+  email: serviceAccount.client_email,
+  key: serviceAccount.private_key,
   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
 });
 
 let previousRowCount = 0;
 
 async function checkForNewRows() {
-  const client = await auth.getClient();
+  const client = await auth.authorize().then(() => auth);
   const sheets = google.sheets({ version: "v4", auth: client });
 
   const res = await sheets.spreadsheets.values.get({
@@ -78,10 +87,8 @@ async function checkForNewRows() {
   }
 }
 
-// 최초 1회 실행
 checkForNewRows().then(() => {
   console.log("✅ 최초 체크 완료, 주기적 확인 시작");
 });
-
-// 주기적으로 확인
 setInterval(checkForNewRows, 30 * 1000);
+ㄴ
