@@ -7,14 +7,9 @@ const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/여기에_웹훅_U
 
 // 서비스 계정 정보 직접 입력 (절대 외부 노출 금지!)
 const serviceAccount = {
-  client_email: "your-service-account@your-project.iam.gserviceaccount.com",
-  private_key: `-----BEGIN PRIVATE KEY-----
-YOUR_PRIVATE_KEY_LINE_1
-YOUR_PRIVATE_KEY_LINE_2
-...
------END PRIVATE KEY-----\n`, // 개행 포함
+  client_email: "your-service-account@project.iam.gserviceaccount.com",
+  private_key: `./key/test-456802-6ac27b7c623e.json`,
 };
-
 const auth = new google.auth.JWT({
   email: serviceAccount.client_email,
   key: serviceAccount.private_key,
