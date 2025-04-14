@@ -91,4 +91,3 @@ checkForNewRows().then(() => {
   console.log("✅ 최초 체크 완료, 주기적 확인 시작");
 });
 setInterval(checkForNewRows, 30 * 1000);
-ㄴ
